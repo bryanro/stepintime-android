@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="12dp">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="-1"
+        android:id="@+id/txtEventId"
+        android:layout_weight="0"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="10:00 AM"
+        android:id="@+id/txtTime"
+        android:layout_weight="0.33"
+        android:gravity="center_vertical|center_horizontal"
+        android:focusable="false" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="3000 steps"
+        android:id="@+id/txtStepCount"
+        android:layout_weight="0.33"
+        android:gravity="center_vertical|center_horizontal"
+        android:focusable="false"/>
+
+    <Switch
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/switchOnOff"
+        android:layout_weight="0.33"
+        android:gravity="center_vertical|center_horizontal"
+        android:splitTrack="false"
+        android:checked="true"
+        android:focusable="false" />
+</LinearLayout>

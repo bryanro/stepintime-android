@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Step in Time</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_connect_fitbit">Fitbit Connections</string>
+    <string name="fitbit_base_uri">https://api.fitbit.com</string>
+    <string name="oauth_uri_request_token">https://api.fitbit.com/oauth/request_token</string>
+    <string name="oauth_uri_access_token">https://api.fitbit.com/oauth/access_token</string>
+    <string name="oauth_uri_authorize">https://www.fitbit.com/oauth/authorize</string>
+    <string name="oauth_callback_scheme">stepintime-fitbit-auth</string>
+    <string name="oauth_callback_host">callback</string>
+    <string name="oauth_consumer_key">[[CONSUMER_KEY_HERE]]</string>
+    <string name="oauth_consumer_secret">[[CONSUMER_SECRET_HERE]]</string>
+    <string name="oauth_token_name">token</string>
+    <string name="oauth_token_secret_name">token_secret</string>
+    <string name="oauth_success_message">Status: oAuth setup already</string>
+    <string name="oauth_not_configured_message">Status: oAuth not setup yet - click button below</string>
+    <string name="title_activity_add_event">Add Event</string>
+    <string name="time_am">AM</string>
+    <string name="time_pm">PM</string>
+    <string name="intent_extra_time">TIME</string>
+    <string name="intent_extra_step_count_scheduled">STEP_COUNT_SCHEDULED</string>
+    <string name="fitbit_webservice_error">Error retrieving step counts. Try authorizing app again.</string>
+    <string name="fitbit_webservice_no_records">Error retrieving step counts. Try authorizing app again.</string>
+    <string name="fitbit_webservice_too_many_records">More than 1 result returned from getStepCountToday web service.</string>
+
+</resources>

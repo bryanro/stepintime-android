@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.bryankrosenbaum.stepintime.ConnectFitbitActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Status: "
+        android:id="@+id/txtStatus"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Authorize App"
+        android:id="@+id/btnAuthorize"
+        android:layout_below="@+id/txtStatus"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickAuthorizeApp" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Profile"
+        android:id="@+id/btnTestProfile"
+        android:layout_below="@+id/btnAuthorize"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickTestProfile" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Step Count"
+        android:id="@+id/btnTestStepCount"
+        android:layout_below="@+id/btnTestProfile"
+        android:layout_centerHorizontal="true"
+        android:nestedScrollingEnabled="false"
+        android:onClick="onClickTestStepCount" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Alert"
+        android:id="@+id/btnTestAlert"
+        android:layout_below="@+id/btnTestStepCount"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickTestAlarm" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Notification"
+        android:id="@+id/btnTestNotification"
+        android:onClick="onClickTestNotification"
+        android:layout_below="@+id/btnTestAlert"
+        android:layout_alignParentStart="true" />
+</RelativeLayout>
