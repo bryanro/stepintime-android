@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="oauth_consumer_key">[[CONSUMER_KEY_HERE]]</string>
+    <string name="oauth_consumer_secret">[[CONSUMER_SECRET_HERE]]</string>
+</resources>

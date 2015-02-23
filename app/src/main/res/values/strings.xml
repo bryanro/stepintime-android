@@ -11,8 +11,6 @@
     <string name="oauth_uri_authorize">https://www.fitbit.com/oauth/authorize</string>
     <string name="oauth_callback_scheme">stepintime-fitbit-auth</string>
     <string name="oauth_callback_host">callback</string>
-    <string name="oauth_consumer_key">[[CONSUMER_KEY_HERE]]</string>
-    <string name="oauth_consumer_secret">[[CONSUMER_SECRET_HERE]]</string>
     <string name="oauth_token_name">token</string>
     <string name="oauth_token_secret_name">token_secret</string>
     <string name="oauth_success_message">Status: oAuth setup already</string>
