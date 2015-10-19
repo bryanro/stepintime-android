@@ -256,6 +256,7 @@ public class ConnectFitbitActivity extends Activity {
             if (result != null) {
                 Toast.makeText(ConnectFitbitActivity.this, result, Toast.LENGTH_LONG).show();
             }
+            updateStatusText();
         }
     }
 
