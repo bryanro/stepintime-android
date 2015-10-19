@@ -205,7 +205,7 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendarAlarmTime.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, eventReminderPendingIntent);
 
-        Log.d(TAG, "alarm set for " + hour + ":" + minute + " with stepCount = " + stepCount);
+        Log.d(TAG, "alarm set for " + hour + ":" + (minute < 10 ? "0" : "") + minute + " with stepCount = " + stepCount);
     }
 
     public void cancelAlarm(Context context, ScheduledEvent scheduledEvent) {
