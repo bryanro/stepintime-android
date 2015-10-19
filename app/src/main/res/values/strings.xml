@@ -9,10 +9,17 @@
     <string name="oauth_uri_request_token">https://api.fitbit.com/oauth/request_token</string>
     <string name="oauth_uri_access_token">https://api.fitbit.com/oauth/access_token</string>
     <string name="oauth_uri_authorize">https://www.fitbit.com/oauth/authorize</string>
-    <string name="oauth_callback_scheme">stepintime-fitbit-auth</string>
+    <string name="oauth_callback_auth_scheme">stepintime-fitbit-auth</string>
     <string name="oauth_callback_host">callback</string>
-    <string name="oauth_token_name">token</string>
-    <string name="oauth_token_secret_name">token_secret</string>
+
+    <string name="pref_name_access_token">pref_oauth_access_token</string>
+    <string name="pref_name_refresh_token">pref_oauth_refresh_token</string>
+    <string name="pref_name_scope">pref_oauth_scope</string>
+    <string name="pref_name_token_type">pref_oauth_token_type</string>
+    <string name="pref_name_expires_in">pref_oauth_expires_in</string>
+    <string name="pref_name_user_id">pref_oauth_user_id</string>
+    <string name="pref_name_expiration_dtm_timeinmillis">pref_oauth_expiration_dtm_timeinmillis</string>
+
     <string name="oauth_success_message">Status: oAuth setup already</string>
     <string name="oauth_not_configured_message">Status: oAuth not setup yet - click button below</string>
     <string name="title_activity_add_event">Add Event</string>

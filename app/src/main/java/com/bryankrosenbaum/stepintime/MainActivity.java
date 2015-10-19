@@ -6,19 +6,16 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bryankrosenbaum.stepintime.adapter.EventAdapter;
 import com.bryankrosenbaum.stepintime.alarm.EventReminderAlarmBroadcastReceiver;
@@ -83,8 +80,8 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
-        String token = prefs.getString(getString(R.string.oauth_token_name), null);
-        String tokenSecret = prefs.getString(getString(R.string.oauth_token_secret_name), null);
+        String token = prefs.getString(getString(R.string.pref_name_access_token), null);
+        String tokenSecret = prefs.getString(getString(R.string.pref_name_refresh_token), null);
         if (token == null || tokenSecret == null) {
             startActivity(new Intent(MainActivity.this, ConnectFitbitActivity.class));
         }

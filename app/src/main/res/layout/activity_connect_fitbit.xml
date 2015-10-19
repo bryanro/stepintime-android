@@ -29,19 +29,19 @@
         android:layout_height="wrap_content"
         android:text="Test Profile"
         android:id="@+id/btnTestProfile"
-        android:layout_below="@+id/btnAuthorize"
-        android:layout_centerHorizontal="true"
-        android:onClick="onClickTestProfile" />
+        android:onClick="onClickTestProfile"
+        android:layout_below="@+id/btnRefreshAuth"
+        android:layout_alignEnd="@+id/btnRefreshAuth" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Test Step Count"
         android:id="@+id/btnTestStepCount"
-        android:layout_below="@+id/btnTestProfile"
-        android:layout_centerHorizontal="true"
         android:nestedScrollingEnabled="false"
-        android:onClick="onClickTestStepCount" />
+        android:onClick="onClickTestStepCount"
+        android:layout_below="@+id/btnTestProfile"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="fill_parent"
@@ -60,4 +60,23 @@
         android:onClick="onClickTestNotification"
         android:layout_below="@+id/btnTestAlert"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Refresh Auth"
+        android:id="@+id/btnRefreshAuth"
+        android:onClick="onClickRefreshAuth"
+        android:layout_below="@+id/btnAuthorize"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Expire Token"
+        android:id="@+id/btnExpireToken"
+        android:onClick="onClickExpireToken"
+        android:layout_below="@+id/btnTestNotification"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

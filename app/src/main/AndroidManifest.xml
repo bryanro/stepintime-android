@@ -53,7 +53,7 @@
 
                 <data
                     android:host="@string/oauth_callback_host"
-                    android:scheme="@string/oauth_callback_scheme" />
+                    android:scheme="@string/oauth_callback_auth_scheme" />
             </intent-filter>
         </activity>
         <activity

@@ -7,41 +7,33 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.bryankrosenbaum.stepintime.R;
+import com.bryankrosenbaum.stepintime.model.AccessTokenWrapper;
 import com.bryankrosenbaum.stepintime.model.ActivityStep;
 import com.bryankrosenbaum.stepintime.model.ActivityStepWrapper;
 import com.bryankrosenbaum.stepintime.model.ScheduledEvent;
-import com.bryankrosenbaum.stepintime.rest.FitbitRequestInterceptor;
+import com.bryankrosenbaum.stepintime.model.AccessToken;
+import com.bryankrosenbaum.stepintime.rest.ServiceGenerator;
 import com.bryankrosenbaum.stepintime.rest.FitbitService;
-import com.bryankrosenbaum.stepintime.signpostretrofit.RetrofitHttpOAuthConsumer;
-import com.bryankrosenbaum.stepintime.signpostretrofit.SigningOkClient;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
 
-import retrofit.RestAdapter;
 import retrofit.RetrofitError;
-import retrofit.client.OkClient;
 import retrofit.client.Response;
-import retrofit.converter.GsonConverter;
+import retrofit.mime.TypedByteArray;
 
 public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
 
     private String TAG = EventReminderAlarmBroadcastReceiver.class.getSimpleName();
 
-    private String OAUTH_CONSUMER_KEY;
+    private String OAUTH2_CLIENT_ID;
     private String OAUTH_CONSUMER_SECRET;
-    private SharedPreferences prefs;
-    private FitbitService fitbitService;
 
     private Uri soundUri;
 
@@ -51,8 +43,79 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
         soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
     }
 
+    /**
+     * Triggered when the alarm goes off at the set interval
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
+
+        Log.d(TAG, "alarm onReceive");
+
+        OAUTH2_CLIENT_ID = context.getString(R.string.oauth2_client_id);
+        OAUTH_CONSUMER_SECRET = context.getString(R.string.oauth_consumer_secret);
+
+        if (AccessToken.getInstance(context).getAccessToken() == null) {
+            Log.e(TAG, "oauth token not set, so do not attempt to get the step count");
+            createErrorNotification(context, context.getString(R.string.fitbit_webservice_error));
+        }
+        else if (AccessToken.getInstance(context).isTokenExpired()) {
+            Log.d(TAG, "oauth2 token is expired, so refresh the token before calling getStepCountToday");
+            oAuthRefreshToken(context, intent);
+        }
+        else {
+            Log.d(TAG, "oauth2 token is not expired, so call getStepCountToday");
+            getStepCountToday(context, intent);
+        }
+    }
+
+    /**
+     * Refresh the oauth2 token and then call getStepCountToday to get the step count
+     * @param context
+     * @param intent
+     * @return
+     */
+    private boolean oAuthRefreshToken(Context context, Intent intent) {
+
+        final Context contextFinal = context;
+        final Intent intentFinal = intent;
+
+        FitbitService fitbitService = ServiceGenerator.createService(FitbitService.class, context.getString(R.string.fitbit_base_uri), OAUTH2_CLIENT_ID, OAUTH_CONSUMER_SECRET);
+        Log.d(TAG, "refresh token: " + AccessToken.getInstance(context).getRefreshToken());
+        fitbitService.refreshToken("refresh_token", AccessToken.getInstance(context).getRefreshToken(), new retrofit.Callback<AccessToken>() {
+            @Override
+            public void success(AccessToken accessToken, Response response) {
+                Log.d(TAG, "successfully refreshed oauth2 token, calling getStepCountToday");
+
+                AccessToken.saveNewAccessToken(accessToken, contextFinal);
+                getStepCountToday(contextFinal, intentFinal);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitErr) {
+                String reason = retrofitErr.getResponse().getReason();
+                int status = retrofitErr.getResponse().getStatus();
+                String message = retrofitErr.getMessage();
+                String body = (new String(((TypedByteArray)retrofitErr.getResponse().getBody()).getBytes()));
+                Log.e(TAG, "error refreshing oauth2 token:"
+                        + "\nstatus: " + status
+                        + "\nreason: " + reason
+                        + "\nmessage: " + message
+                        + "\nbody: " + body);
+                createErrorNotification(contextFinal, contextFinal.getString(R.string.fitbit_webservice_error));
+            }
+        });
+
+        return false;
+    }
+
+    /**
+     * Call the Fitbit API to get the step count for today
+     * @param context
+     * @param intent
+     */
+    private void getStepCountToday(Context context, Intent intent) {
 
         Bundle extras = intent.getExtras();
         final String time = extras.getString(context.getString(R.string.intent_extra_time));
@@ -62,9 +125,7 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
 
         Log.d(TAG, "Received Broadcast (" + time + ", " + stepCountScheduled + ")");
 
-        if (fitbitService == null) {
-            initializeFitbitService(context);
-        }
+        FitbitService fitbitService = ServiceGenerator.createService(FitbitService.class, context.getString(R.string.fitbit_base_uri), AccessToken.getInstance(context));
 
         fitbitService.getStepCountToday(new retrofit.Callback<ActivityStepWrapper>() {
             @Override
@@ -75,8 +136,8 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
                     createErrorNotification(contextFinal, contextFinal.getString(R.string.fitbit_webservice_no_records));
                 }
                 else if (activitySteps.length > 1) {
+                    // should not happen
                     Log.w(TAG, "getStepCountToday returned " + activitySteps.length + " results");
-                    // TODO: REMOVE NOTIFICATION
                     createErrorNotification(contextFinal, contextFinal.getString(R.string.fitbit_webservice_too_many_records));
                 }
                 // expected: activitySteps.length == 1
@@ -91,20 +152,20 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
                         Log.d(TAG, "step count actual=" + stepCountActual + ", scheduled = " + stepCountScheduled);
                         createNotification(contextFinal, time, stepCountScheduled, Integer.toString(stepCountActual));
                     }
-                    /*else if (Integer.parseInt(stepCountScheduled) > stepCountActual) {
-                        Log.d(TAG, "step count actual is less than scheduled, so show reminder");
-                        createNotification(contextFinal, time, stepCountScheduled, Integer.toString(stepCountActual));
-                    }
-                    else {
-                        Log.d(TAG, "step count actual is greater than scheduled, so do not show reminder");
-                        createErrorNotification(contextFinal, "Good job: " + Integer.toString(stepCountActual) + " actual vs " + stepCountScheduled + " scheduled");
-                    }*/
                 }
             }
 
             @Override
-            public void failure(RetrofitError error) {
-                Log.e(TAG, "error retreiving step counts: " + error);
+            public void failure(RetrofitError retrofitErr) {
+                String reason = retrofitErr.getResponse().getReason();
+                int status = retrofitErr.getResponse().getStatus();
+                String message = retrofitErr.getMessage();
+                String body = (new String(((TypedByteArray)retrofitErr.getResponse().getBody()).getBytes()));
+                Log.e(TAG, "error retrieving step count:"
+                        + "\nstatus: " + status
+                        + "\nreason: " + reason
+                        + "\nmessage: " + message
+                        + "\nbody: " + body);
                 createErrorNotification(contextFinal, contextFinal.getString(R.string.fitbit_webservice_error));
             }
         });
@@ -206,32 +267,6 @@ public class EventReminderAlarmBroadcastReceiver extends BroadcastReceiver {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
-    }
-
-    private void initializeFitbitService(Context context) {
-
-        OAUTH_CONSUMER_KEY = context.getString(R.string.oauth_consumer_key);
-        OAUTH_CONSUMER_SECRET = context.getString(R.string.oauth_consumer_secret);
-
-        FitbitRequestInterceptor fitbitRequestInterceptor = new FitbitRequestInterceptor();
-        Gson gsonConv = new GsonBuilder().create();
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String token = prefs.getString(context.getString(R.string.oauth_token_name), null);
-        String tokenSecret = prefs.getString(context.getString(R.string.oauth_token_secret_name), null);
-
-        RetrofitHttpOAuthConsumer oAuthConsumer = new RetrofitHttpOAuthConsumer(OAUTH_CONSUMER_KEY, OAUTH_CONSUMER_SECRET);
-        oAuthConsumer.setTokenWithSecret(token, tokenSecret);
-        OkClient okClient = new SigningOkClient(oAuthConsumer);
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(context.getString(R.string.fitbit_base_uri))
-                .setRequestInterceptor(fitbitRequestInterceptor)
-                .setConverter(new GsonConverter(gsonConv))
-                .setClient(okClient)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
-                .build();
-
-        fitbitService = restAdapter.create(FitbitService.class);
     }
 
     private String formatTime(Context context, int hour, int minute) {
