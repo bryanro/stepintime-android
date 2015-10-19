@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="oauth_consumer_key">REPLACE_OAUTH_CONSUMER_KEY</string>
+    <string name="oauth_consumer_secret">REPLACE_OAUTH_CONSUMER_SECRET</string>
+    <string name="oauth2_client_id">REPLACE_OAUTH@_CLIENT_ID</string>
+</resources>
